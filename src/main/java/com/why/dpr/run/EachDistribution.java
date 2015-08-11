@@ -26,6 +26,7 @@ public class EachDistribution implements Runnable {
 			InputStream in = new BufferedInputStream(new FileInputStream(
 					filePath));
 			prop.load(in);
+			in.close();
 		} catch (IOException e) {
 			logger.warn(e.getMessage());
 		}
