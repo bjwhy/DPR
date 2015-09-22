@@ -1,13 +1,11 @@
 package com.why.dpr.scenario;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.why.dpr.common.TypeUtils;
 import com.why.dpr.task.HttpClient;
 import com.why.dpr.task.IClient;
 
@@ -24,20 +22,9 @@ public class LinearThreadGroup extends AbstractThreadGroup {
 	public void start() {
 		IClient cli;
 		CountDownLatch doneSignal = new CountDownLatch(vara.getThreadsNum());
-		if (vara.isVirtualIp()) {
-			List<String> ipList = TypeUtils.ipToList(vara.getIp());
-			cli = new HttpClient(ipList, vara.getRunTimes(), doneSignal); /*
-																		 * change
-																		 * code
-																		 * here
-																		 */
-		} else {
-			String ip = vara.getIp();
-			cli = new HttpClient(ip, vara.getRunTimes(), doneSignal); /*
-																	 * change
-																	 * code here
-																	 */
-		}
+
+		cli = new HttpClient(vara.getThreadsNum(), vara.getRunTimes(),
+				doneSignal);
 		cli.init();
 		manage_threads(cli);
 		try {

@@ -1,8 +1,6 @@
 package com.why.dpr.scenario;
 
 public class ThreadGroupVariable {
-	private boolean isVirtualIp;
-	private String ip;
 	private int threadsNum;
 	private int rampUpPeriod;
 	private int runTimes;
@@ -14,22 +12,6 @@ public class ThreadGroupVariable {
 
 	private static class ThreadGroupVariableHolder {
 		static ThreadGroupVariable instance = new ThreadGroupVariable();
-	}
-
-	public boolean isVirtualIp() {
-		return isVirtualIp;
-	}
-
-	public void setVirtualIp(boolean isVirtualIp) {
-		this.isVirtualIp = isVirtualIp;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
 	}
 
 	public int getThreadsNum() {

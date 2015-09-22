@@ -30,9 +30,7 @@ public class EachDistribution implements Runnable {
 		} catch (IOException e) {
 			logger.warn(e.getMessage());
 		}
-		boolean isVirtualIp = Boolean.valueOf(prop
-				.getProperty("scenario.isVirtualIp"));
-		String ip = prop.getProperty("scenario.ip");
+
 		int threadsNum = Integer.valueOf(prop
 				.getProperty("scenario.threadsNum"));
 		int rampUpPeriod = Integer.valueOf(prop
@@ -40,8 +38,6 @@ public class EachDistribution implements Runnable {
 		int runTimes = Integer.valueOf(prop.getProperty("scenario.runTimes"));
 		int perRampUp = Integer.valueOf(prop.getProperty("scenario.perRampUp"));
 		ThreadGroupVariable vara = ThreadGroupVariable.getInstance();
-		vara.setIp(ip);
-		vara.setVirtualIp(isVirtualIp);
 		vara.setRampUpPeriod(rampUpPeriod);
 		vara.setRunTimes(runTimes);
 		vara.setThreadsNum(threadsNum);
