@@ -2,9 +2,10 @@ package com.why.dpr.task;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -57,7 +58,9 @@ public class HttpClient extends AbstractClient {
 			ArrayList<String[]> file_content = null;
 			try {
 				file_content = new ArrayList<String[]>();
-				BufferedReader reader = new BufferedReader(new FileReader(file));
+				BufferedReader reader = new BufferedReader(
+						new InputStreamReader(new FileInputStream(file),
+								"UTF-8"));
 				String line;
 				while ((line = reader.readLine()) != null) {
 					String[] keys = line.split("\t");
@@ -82,82 +85,74 @@ public class HttpClient extends AbstractClient {
 			String file_name = entry.getKey();
 			ArrayList<String[]> content = entry.getValue();
 
-			int content_line = content.size();
-			int len = content.get(0).length;
+			String httpUrl = "";
 
 			switch (file_name) {
 			case "KeywordSearch":
-				try {
-					StringBuilder request, errMsg;
-					for (int i = 0; i < content_line; i++) {
-						if (i % threadNums == current_thread) {
-							String[] line = content.get(i);
+				httpUrl = "http://lbsservice.10101111.com/ucarlbsservice/v1/keywordSearch";
+				break;
+			case "InverseGeo":
+				httpUrl = "http://lbsservice.10101111.com/ucarlbsservice/v1/inverseGeography";
+				break;
+			default:
+				httpUrl = "http://lbsservice.10101111.com/ucarlbsservice/v1/nearSearch";
+				break;
+			}
 
-							request = new StringBuilder(128);
-							for (int j = 0; j < len; j++) {
-								if (j == len - 2)
-									request.append(line[j]);
-								else {
-									request.append(line[j]).append("&");
-								}
-							}
+			int content_line = content.size();
 
-							String httpUrl = "http://lbsservice.10101111.com/ucarlbsservice/v1/keywordSearch";
+			try {
+				StringBuilder request;
+				for (int i = 0; i < content_line; i++) {
+					if (i % threadNums == current_thread) {
 
-							URL u = new URL(
-									new String(httpUrl.getBytes("UTF8")));
-							HttpURLConnection huc = (HttpURLConnection) u
-									.openConnection();
+						String[] line = content.get(i);
+						int len = line.length;
 
-							this.connect(huc);
-
-							String response = this.writeAndGetResponse(huc,
-									request.toString());
-
-							if (response != "") {
-								String[] expects = line[len - 1].split(",");
-								errMsg = new StringBuilder(128);
-								for (String expect : expects) {
-									if (response.indexOf(expect) < 0) {
-										errMsg.append("Missing:")
-												.append(expect).append(",");
-									}
-								}
-
-								if (errMsg.length() > 0) {
-									logger.error(
-											"request:{0} response:{1} {2}",
-											request.insert(0, "?")
-													.insert(0, httpUrl)
-													.toString(), response,
-											errMsg.toString());
-								} else {
-									logger.info(
-											"request:{0} response:{1}",
-											request.insert(0, "?")
-													.insert(0, httpUrl)
-													.toString(), response);
-								}
+						request = new StringBuilder(128);
+						for (int j = 0; j < len; j++) {
+							if (j == len - 1) {
+							} else if (j == len - 2) {
+								request.append(line[j]);
+							} else {
+								request.append(line[j]).append("&");
 							}
 						}
 
+						URL u = new URL(new String(httpUrl.getBytes("UTF8")));
+						HttpURLConnection huc = (HttpURLConnection) u
+								.openConnection();
+
+						this.connect(huc);
+
+						String response = this.writeAndGetResponse(huc,
+								request.toString());
+
+						if (response != "") {
+							String[] expects = line[len - 1].split(",");
+							this.verify(request, httpUrl, response, expects);
+						}
 					}
-				} catch (Exception e) {
-					logger.error("Exception catch:{0}", e.getMessage());
+
 				}
-			case "2":
-			case "3":
-			default:
+			} catch (Exception e) {
+				logger.error("Exception catch:{}", e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
 
 	public static String streamToString(InputStream in) throws IOException {
-		StringBuilder out = new StringBuilder();
-		byte[] b = new byte[4096];
-		for (int n; (n = in.read(b)) != -1;) {
-			out.append(new String(b, 0, n, "utf-8"));
+
+		BufferedReader bufferedReader = new BufferedReader(
+				new InputStreamReader(in, "UTF-8"));
+
+		StringBuilder out = new StringBuilder(128);
+		String line = null;
+		while ((line = bufferedReader.readLine()) != null) {
+			out.append(line);
 		}
+
 		return out.toString();
 	}
 
@@ -177,7 +172,7 @@ public class HttpClient extends AbstractClient {
 		String result = "";
 
 		OutputStream outStream = huc.getOutputStream();
-		outStream.write(request.getBytes("UTF8"));
+		outStream.write(request.getBytes("UTF-8"));
 		outStream.flush();
 		outStream.close();
 
@@ -188,8 +183,26 @@ public class HttpClient extends AbstractClient {
 			result = streamToString(inStream);
 			inStream.close();
 		} else {
-			logger.error("http status wrong:{0}", responseCode);
+			logger.error("http status wrong:{}", responseCode);
 		}
 		return result;
+	}
+
+	public void verify(StringBuilder request, String httpUrl, String response,
+			String[] expects) {
+		StringBuilder errMsg = new StringBuilder(128);
+		for (String expect : expects) {
+			if (response.indexOf(expect) < 0) {
+				errMsg.append("Missing:").append(expect).append(",");
+			}
+		}
+
+		if (errMsg.length() > 0) {
+			logger.error("request:{} response:{} {}", request.insert(0, "?")
+					.insert(0, httpUrl).toString(), response, errMsg.toString());
+		} else {
+			logger.info("request:{} response:{}", request.insert(0, "?")
+					.insert(0, httpUrl).toString(), response);
+		}
 	}
 }
