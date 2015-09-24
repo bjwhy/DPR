@@ -4,9 +4,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * 反射工具类
  * 
@@ -14,34 +11,20 @@ import org.apache.logging.log4j.Logger;
  * 
  */
 public class ReflectUtils {
-	private static final Logger logger = LogManager
-			.getLogger(ReflectUtils.class);
 
 	/**
 	 * 创建类的实例，调用类的无参构造方法
 	 * 
 	 * @param className
 	 * @return
+	 * @throws Exception
 	 */
-	public static Object newInstance(String className) {
+	public static Object newInstance(String className) throws Exception {
 
 		Object instance = null;
 
-		try {
-			Class<?> clazz = Class.forName(className);
-			instance = clazz.newInstance();
-		} catch (ClassNotFoundException e) {
-			logger.warn(e.getMessage());
-		} catch (InstantiationException e) {
-			// if this Class represents an abstract class, an interface, an
-			// array class, a primitive type, or void; or if the class has no
-			// nullary constructor; or if the instantiation fails for some other
-			// reason.
-			logger.warn(e.getMessage());
-		} catch (IllegalAccessException e) {
-			// if the class or its nullary constructor is not accessible
-			logger.warn(e.getMessage());
-		}
+		Class<?> clazz = Class.forName(className);
+		instance = clazz.newInstance();
 
 		return instance;
 
@@ -68,21 +51,19 @@ public class ReflectUtils {
 	 * @param paramTypes
 	 * @param params
 	 * @return
+	 * @throws Exception
 	 */
 	public static Object invokePublicStaticMethod(String className,
-			String methodName, Class<?>[] paramTypes, Object[] params) {
+			String methodName, Class<?>[] paramTypes, Object[] params)
+			throws Exception {
 
 		Object value = null;
-		try {
-			Class<?> cls = Class.forName(className);
+		Class<?> cls = Class.forName(className);
 
-			Method method = cls.getMethod(methodName, paramTypes);
+		Method method = cls.getMethod(methodName, paramTypes);
 
-			if (isPublicStatic(method)) {
-				value = method.invoke(null, params);
-			}
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+		if (isPublicStatic(method)) {
+			value = method.invoke(null, params);
 		}
 
 		return value;
@@ -96,21 +77,19 @@ public class ReflectUtils {
 	 * @param paramTypes
 	 * @param params
 	 * @return
+	 * @throws Exception
 	 */
 	public static Object invokePublicMethod(String className,
-			String methodName, Class<?>[] paramTypes, Object[] params) {
+			String methodName, Class<?>[] paramTypes, Object[] params)
+			throws Exception {
 
 		Object value = null;
-		try {
-			Class<?> cls = Class.forName(className);
+		Class<?> cls = Class.forName(className);
 
-			Method method = cls.getMethod(methodName, paramTypes);
+		Method method = cls.getMethod(methodName, paramTypes);
 
-			if (!isPublicStatic(method)) {
-				value = method.invoke(cls.newInstance(), params);
-			}
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+		if (!isPublicStatic(method)) {
+			value = method.invoke(cls.newInstance(), params);
 		}
 
 		return value;

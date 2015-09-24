@@ -66,38 +66,27 @@ public class DBUtils {
 	 * @param sql
 	 * @throws SQLException
 	 * */
-	public List<Object[]> queryList(String sql) {
-		try {
-			Connection conn = ds.getConnection();
-			QueryRunner queryRunner = new QueryRunner();
-			List<Object[]> arrayResult = queryRunner.query(conn, sql,
-					new ArrayListHandler());
-			conn.close();
-			return arrayResult;
-		} catch (SQLException e) {
-			logger.warn(e.getMessage());
-		}
-		return null;
-
+	public List<Object[]> queryList(String sql) throws SQLException {
+		Connection conn = ds.getConnection();
+		QueryRunner queryRunner = new QueryRunner();
+		List<Object[]> arrayResult = queryRunner.query(conn, sql,
+				new ArrayListHandler());
+		conn.close();
+		return arrayResult;
 	}
 
 	/**
 	 * 获取单条查询结果
 	 * 
 	 * @param sql
+	 * @throws SQLException
 	 * */
-	public Object[] querySingle(String sql) {
-		try {
-			Connection conn = ds.getConnection();
-			QueryRunner queryRunner = new QueryRunner();
-			Object[] arrayResult = queryRunner.query(conn, sql,
-					new ArrayHandler());
-			conn.close();
-			return arrayResult;
-		} catch (SQLException e) {
-			logger.warn(e.getMessage());
-		}
-		return null;
+	public Object[] querySingle(String sql) throws SQLException {
+		Connection conn = ds.getConnection();
+		QueryRunner queryRunner = new QueryRunner();
+		Object[] arrayResult = queryRunner.query(conn, sql, new ArrayHandler());
+		conn.close();
+		return arrayResult;
 
 	}
 
@@ -105,35 +94,27 @@ public class DBUtils {
 	 * 执行无参insert、update、delete操作
 	 * 
 	 * @param sql
+	 * @throws SQLException
 	 * */
-	public int update(String sql) {
-		try {
-			Connection conn = ds.getConnection();
-			QueryRunner queryRunner = new QueryRunner();
-			int result = queryRunner.update(conn, sql);
-			conn.close();
-			return result;
-		} catch (SQLException e) {
-			logger.warn(e.getMessage());
-		}
-		return 0;
+	public int update(String sql) throws SQLException {
+		Connection conn = ds.getConnection();
+		QueryRunner queryRunner = new QueryRunner();
+		int result = queryRunner.update(conn, sql);
+		conn.close();
+		return result;
 	}
 
 	/**
 	 * 执行有参insert、update、delete操作
 	 * 
 	 * @param sql
+	 * @throws SQLException
 	 * */
-	public int paramUpdate(String sql, Object... params) {
-		try {
-			Connection conn = ds.getConnection();
-			QueryRunner queryRunner = new QueryRunner();
-			int result = queryRunner.update(conn, sql, params);
-			conn.close();
-			return result;
-		} catch (SQLException e) {
-			logger.warn(e.getMessage());
-		}
-		return 0;
+	public int paramUpdate(String sql, Object... params) throws SQLException {
+		Connection conn = ds.getConnection();
+		QueryRunner queryRunner = new QueryRunner();
+		int result = queryRunner.update(conn, sql, params);
+		conn.close();
+		return result;
 	}
 }
