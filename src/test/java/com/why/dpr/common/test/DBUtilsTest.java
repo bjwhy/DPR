@@ -1,5 +1,6 @@
 package com.why.dpr.common.test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,28 @@ public class DBUtilsTest {
 	@Test
 	public void querySingleTest() {
 		DBUtils db = DBUtils.getInstance();
-		Object[] result = db
-				.querySingle("select * from em_version_key where version='3.200'");
+		Object[] result = null;
+		try {
+			result = db
+					.querySingle("select * from em_version_key where version='3.200'");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		assertEquals(result[2].toString(), "1234567890123456");
 	}
 
 	@Test
 	public void querylistTest() {
 		DBUtils db = DBUtils.getInstance();
-		List<Object[]> result = db
-				.queryList("select rolename from session_role where sessiontime='1800'");
+		List<Object[]> result = null;
+		try {
+			result = db
+					.queryList("select rolename from session_role where sessiontime='1800'");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<String> result_list = new ArrayList<String>();
 		int result_len = result.size();
 		for (int i = 0; i < result_len; i++) {
