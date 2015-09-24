@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.why.dpr.task.HttpClient;
+import com.why.dpr.task.DefaultClient;
 import com.why.dpr.task.IClient;
 
 public class PerRampUpThreadGroup extends AbstractThreadGroup {
@@ -24,7 +24,7 @@ public class PerRampUpThreadGroup extends AbstractThreadGroup {
 		CountDownLatch doneSignal = new CountDownLatch(vara.getThreadsNum());
 		CyclicBarrier barrier = new CyclicBarrier(vara.getPerRampUp());
 
-		cli = new HttpClient(vara.getThreadsNum(), vara.getRunTimes(),
+		cli = new DefaultClient(vara.getThreadsNum(), vara.getRunTimes(),
 				doneSignal, barrier);
 
 		cli.init();

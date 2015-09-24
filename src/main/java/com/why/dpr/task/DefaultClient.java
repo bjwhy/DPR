@@ -19,8 +19,10 @@ import java.util.concurrent.CyclicBarrier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class HttpClient extends AbstractClient {
-	private static final Logger logger = LogManager.getLogger(HttpClient.class);
+import com.why.dpr.common.VerifyUtils;
+
+public class DefaultClient extends AbstractClient {
+	private static final Logger logger = LogManager.getLogger(DefaultClient.class);
 
 	private Map<String, ArrayList<String[]>> re_map;
 
@@ -30,13 +32,13 @@ public class HttpClient extends AbstractClient {
 
 	private static final int READ_TIMEOUT = 3000;
 
-	public HttpClient(int threadNums, int runTimes, CountDownLatch doneSignal) {
+	public DefaultClient(int threadNums, int runTimes, CountDownLatch doneSignal) {
 		this.threadNums = threadNums;
 		this.runTimes = runTimes;
 		this.doneSignal = doneSignal;
 	}
 
-	public HttpClient(int threadNums, int runTimes, CountDownLatch doneSignal,
+	public DefaultClient(int threadNums, int runTimes, CountDownLatch doneSignal,
 			CyclicBarrier barrier) {
 		this.threadNums = threadNums;
 		this.runTimes = runTimes;
@@ -192,7 +194,7 @@ public class HttpClient extends AbstractClient {
 			String[] expects) {
 		StringBuilder errMsg = new StringBuilder(128);
 		for (String expect : expects) {
-			if (response.indexOf(expect) < 0) {
+			if (VerifyUtils.isContains(response, expect)) {
 				errMsg.append("Missing:").append(expect).append(",");
 			}
 		}

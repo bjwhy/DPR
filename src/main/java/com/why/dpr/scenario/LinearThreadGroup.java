@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.why.dpr.task.HttpClient;
+import com.why.dpr.task.DefaultClient;
 import com.why.dpr.task.IClient;
 
 public class LinearThreadGroup extends AbstractThreadGroup {
@@ -23,7 +23,7 @@ public class LinearThreadGroup extends AbstractThreadGroup {
 		IClient cli;
 		CountDownLatch doneSignal = new CountDownLatch(vara.getThreadsNum());
 
-		cli = new HttpClient(vara.getThreadsNum(), vara.getRunTimes(),
+		cli = new DefaultClient(vara.getThreadsNum(), vara.getRunTimes(),
 				doneSignal);
 		cli.init();
 		manage_threads(cli);
