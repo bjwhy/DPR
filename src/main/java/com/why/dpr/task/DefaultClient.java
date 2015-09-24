@@ -22,7 +22,8 @@ import org.apache.logging.log4j.Logger;
 import com.why.dpr.common.VerifyUtils;
 
 public class DefaultClient extends AbstractClient {
-	private static final Logger logger = LogManager.getLogger(DefaultClient.class);
+	private static final Logger logger = LogManager
+			.getLogger(DefaultClient.class);
 
 	private Map<String, ArrayList<String[]>> re_map;
 
@@ -38,8 +39,8 @@ public class DefaultClient extends AbstractClient {
 		this.doneSignal = doneSignal;
 	}
 
-	public DefaultClient(int threadNums, int runTimes, CountDownLatch doneSignal,
-			CyclicBarrier barrier) {
+	public DefaultClient(int threadNums, int runTimes,
+			CountDownLatch doneSignal, CyclicBarrier barrier) {
 		this.threadNums = threadNums;
 		this.runTimes = runTimes;
 		this.doneSignal = doneSignal;
@@ -194,7 +195,7 @@ public class DefaultClient extends AbstractClient {
 			String[] expects) {
 		StringBuilder errMsg = new StringBuilder(128);
 		for (String expect : expects) {
-			if (VerifyUtils.isContains(response, expect)) {
+			if (!VerifyUtils.isContains(response, expect)) {
 				errMsg.append("Missing:").append(expect).append(",");
 			}
 		}
