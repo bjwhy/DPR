@@ -31,20 +31,29 @@ public class ReflectUtils {
 	}
 
 	/**
-	 * 是否是公用静态方法
+	 * 是否是公有方法
 	 * 
 	 * @param member
 	 * @return
 	 */
-	private static boolean isPublicStatic(Member member) {
-		boolean isPS = false;
+	private static boolean isPrivate(Member member) {
 		int mod = member.getModifiers();
-		isPS = Modifier.isPublic(mod) && Modifier.isStatic(mod);
-		return isPS;
+		return Modifier.isPrivate(mod);
 	}
 
 	/**
-	 * 调用public静态方法
+	 * 是否是私有静态方法
+	 * 
+	 * @param member
+	 * @return
+	 */
+	private static boolean isPrivateStatic(Member member) {
+		int mod = member.getModifiers();
+		return Modifier.isPrivate(mod) && Modifier.isStatic(mod);
+	}
+
+	/**
+	 * 调用静态方法
 	 * 
 	 * @param className
 	 * @param methodName
@@ -53,19 +62,21 @@ public class ReflectUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object invokePublicStaticMethod(String className,
+	public static Object invokeStaticMethod(String className,
 			String methodName, Class<?>[] paramTypes, Object[] params)
 			throws Exception {
 
 		Object value = null;
 		Class<?> cls = Class.forName(className);
 
-		Method method = cls.getMethod(methodName, paramTypes);
+		Method method = cls.getDeclaredMethod(methodName, paramTypes);
 
-		if (isPublicStatic(method)) {
-			value = method.invoke(null, params);
+		if (isPrivateStatic(method)) {
+			method.setAccessible(true);
 		}
 
+		value = method.invoke(null, params);
+		
 		return value;
 	}
 
@@ -79,18 +90,19 @@ public class ReflectUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Object invokePublicMethod(String className,
-			String methodName, Class<?>[] paramTypes, Object[] params)
-			throws Exception {
+	public static Object invokeMethod(String className, String methodName,
+			Class<?>[] paramTypes, Object[] params) throws Exception {
 
 		Object value = null;
 		Class<?> cls = Class.forName(className);
 
 		Method method = cls.getMethod(methodName, paramTypes);
 
-		if (!isPublicStatic(method)) {
-			value = method.invoke(cls.newInstance(), params);
+		if (isPrivate(method)) {
+			method.setAccessible(true);
 		}
+		
+		value = method.invoke(cls.newInstance(), params);
 
 		return value;
 	}

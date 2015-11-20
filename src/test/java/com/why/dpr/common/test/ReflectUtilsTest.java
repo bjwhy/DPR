@@ -24,12 +24,12 @@ public class ReflectUtilsTest {
 	}
 
 	@Test
-	public void invokePublicStaticMethodTest() {
+	public void invokeStaticMethodTest() {
 		Class<?>[] paramTypes = { Object.class, Object.class };
 		Object[] params = { "11111", "11111" };
 		Object value = null;
 		try {
-			value = ReflectUtils.invokePublicStaticMethod(
+			value = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isEqual", paramTypes,
 					params);
 		} catch (Exception e) {
@@ -42,7 +42,7 @@ public class ReflectUtilsTest {
 		Object[] params1 = { "11111", "11110" };
 		Object value1 = null;
 		try {
-			value1 = ReflectUtils.invokePublicStaticMethod(
+			value1 = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isGreaterThan",
 					paramTypes1, params1);
 		} catch (Exception e) {
@@ -55,7 +55,7 @@ public class ReflectUtilsTest {
 		Object[] params2 = { 9999, 11110 };
 		Object value2 = null;
 		try {
-			value2 = ReflectUtils.invokePublicStaticMethod(
+			value2 = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isGreaterThan",
 					paramTypes2, params2);
 		} catch (Exception e) {
@@ -66,7 +66,7 @@ public class ReflectUtilsTest {
 	}
 
 	@Test
-	public void invokePublicStaticMethodTest1() {
+	public void invokeStaticMethodTest1() {
 		Class<?>[] paramTypes = { List.class, List.class };
 		List<String> a1 = new ArrayList<String>();
 		List<String> a2 = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class ReflectUtilsTest {
 		Object[] params = { a1, a2 };
 		Object value = null;
 		try {
-			value = ReflectUtils.invokePublicStaticMethod(
+			value = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isListEqual",
 					paramTypes, params);
 		} catch (Exception e) {
@@ -96,7 +96,7 @@ public class ReflectUtilsTest {
 		Object[] params1 = { "11111dafshgrejndferfqr325", "11111" };
 		Object value1 = null;
 		try {
-			value1 = ReflectUtils.invokePublicStaticMethod(
+			value1 = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isStartsWith",
 					paramTypes1, params1);
 		} catch (Exception e) {
@@ -109,7 +109,7 @@ public class ReflectUtilsTest {
 		Object[] params2 = { "123qweasdzxc", "qwe" };
 		Object value2 = null;
 		try {
-			value2 = ReflectUtils.invokePublicStaticMethod(
+			value2 = ReflectUtils.invokeStaticMethod(
 					"com.why.dpr.common.VerifyUtils", "isContains",
 					paramTypes2, params2);
 		} catch (Exception e) {
@@ -117,5 +117,21 @@ public class ReflectUtilsTest {
 			e.printStackTrace();
 		}
 		assertTrue((boolean) value2);
+	}
+
+	@Test
+	public void invokeMethodTest() {
+		Class<?>[] paramTypes = { String.class };
+		Object[] params = { "123qweasdzxc" };
+		Object value = null;
+		try {
+			value = ReflectUtils.invokeMethod(
+					"com.why.dpr.distributed.message.JsonMessage", "setJson",
+					paramTypes, params);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertNull(value);
 	}
 }
